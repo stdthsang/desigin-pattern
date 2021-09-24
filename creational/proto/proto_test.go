@@ -4,6 +4,12 @@ import "testing"
 
 var manager *ProtoManager
 
+func init() {
+	manager = NewProtoManager()
+	t1 := &Type1{name: "type1"}
+	manager.Set("t1", t1)
+}
+
 type Type1 struct {
 	name string
 }
@@ -36,10 +42,4 @@ func TestCloneFromManager(t *testing.T) {
 	if t1.name != "type1" {
 		t.Fatal("error")
 	}
-}
-
-func init() {
-	manager = NewProtoManager()
-	t1 := &Type1{name: "type1"}
-	manager.Set("t1", t1)
 }

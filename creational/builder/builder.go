@@ -7,17 +7,17 @@ type Builder interface {
 }
 
 type Director struct {
-	Builder
+	builder Builder
 }
 
-func NewBuilder(builder Builder) *Director {
-	return &Director{Builder: builder}
+func NewDirector(builder Builder) *Director {
+	return &Director{builder: builder}
 }
 
 func (d *Director) Construct() {
-	d.Builder.Part1()
-	d.Builder.Part2()
-	d.Builder.Part3()
+	d.builder.Part1()
+	d.builder.Part2()
+	d.builder.Part3()
 }
 
 type Builder1 struct {

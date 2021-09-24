@@ -16,15 +16,13 @@ func NewAPI(t int) API {
 	return nil
 }
 
-type HiAPI struct {
-}
+type HiAPI struct{}
 
 func (h *HiAPI) Say(name string) string {
 	return fmt.Sprintf("Hi, %s", name)
 }
 
-type HelloAPI struct {
-}
+type HelloAPI struct{}
 
 func (h *HelloAPI) Say(name string) string {
 	return fmt.Sprintf("Hello, %s", name)

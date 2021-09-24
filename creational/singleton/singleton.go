@@ -4,8 +4,7 @@ import "sync"
 
 var Instance *singleton
 
-type singleton struct {
-}
+type singleton struct{}
 
 func init() {
 	Instance = &singleton{}
