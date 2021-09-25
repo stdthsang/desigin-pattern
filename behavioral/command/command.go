@@ -2,6 +2,16 @@ package command
 
 import "fmt"
 
+type MotherBoard struct{}
+
+func (*MotherBoard) Start() {
+	fmt.Print("system starting\n")
+}
+
+func (*MotherBoard) Reboot() {
+	fmt.Print("system rebooting\n")
+}
+
 type Command interface {
 	Execute()
 }
@@ -11,11 +21,13 @@ type StartCmd struct {
 }
 
 func NewStartCmd(mb *MotherBoard) *StartCmd {
-	return &StartCmd{mb: mb}
+	return &StartCmd{
+		mb: mb,
+	}
 }
 
-func (s *StartCmd) Execute() {
-	s.mb.Start()
+func (c *StartCmd) Execute() {
+	c.mb.Start()
 }
 
 type RebootCmd struct {
@@ -23,22 +35,13 @@ type RebootCmd struct {
 }
 
 func NewRebootCmd(mb *MotherBoard) *RebootCmd {
-	return &RebootCmd{mb: mb}
+	return &RebootCmd{
+		mb: mb,
+	}
 }
 
-func (r *RebootCmd) Execute() {
-	r.mb.Reboot()
-}
-
-type MotherBoard struct {
-}
-
-func (mb *MotherBoard) Start() {
-	fmt.Print("system starting\n")
-}
-
-func (mb *MotherBoard) Reboot() {
-	fmt.Print("system rebooting\n")
+func (c *RebootCmd) Execute() {
+	c.mb.Reboot()
 }
 
 type Box struct {

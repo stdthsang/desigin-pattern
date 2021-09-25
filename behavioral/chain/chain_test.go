@@ -1,23 +1,27 @@
 package chain
 
 func ExampleChain() {
-	c1 := NewProjectManagerChain()
-	c2 := NewDepManagerChain()
-	c3 := NewGeneralManagerChain()
+	cashier := &Cashier{}
 
-	c1.SetSuccessor(c2)
-	c2.SetSuccessor(c3)
+	//Set next for medical department
+	medical := &Medical{}
+	medical.SetNext(cashier)
 
-	var c Manager = c1
+	//Set next for doctor department
+	doctor := &Doctor{}
+	doctor.SetNext(medical)
 
-	c.HandleFeeRequest("bob", 400)
-	c.HandleFeeRequest("tom", 1400)
-	c.HandleFeeRequest("ada", 10000)
-	c.HandleFeeRequest("floar", 400)
+	//Set next for reception department
+	reception := &Reception{}
+	reception.SetNext(doctor)
+
+	patient := &Patient{Name: "abc"}
+	//Patient visiting
+	reception.Execute(patient)
+
 	// Output:
-	// Project manager permit bob 400 fee request
-	// Dep manager permit tom 1400 fee request
-	// General manager permit ada 10000 fee request
-	// Project manager don't permit floar 400 fee request
-
+	// Reception registering patient
+	// Doctor checking patient
+	// Medical giving medicine to patient
+	// Cashier getting money from patient patient
 }

@@ -2,73 +2,87 @@ package visitor
 
 import "fmt"
 
-type Customer interface {
-	Accept(Visitor)
+type visitor interface {
+	visitForSquare(*Square)
+	visitForCircle(*Circle)
+	visitForrectangle(*Rectangle)
 }
 
-type Visitor interface {
-	Visit(Customer)
+type Shape interface {
+	GetType() string
+	Accept(visitor)
 }
 
-type EnterpriseCustomer struct {
-	name string
+type Square struct {
+	side int
 }
 
-type CustomerCol struct {
-	customers []Customer
+func (s *Square) Accept(v visitor) {
+	v.visitForSquare(s)
 }
 
-func (c *CustomerCol) Add(customer Customer) {
-	c.customers = append(c.customers, customer)
+func (s *Square) GetType() string {
+	return "Square"
 }
 
-func (c *CustomerCol) Accept(visitor Visitor) {
-	for _, customer := range c.customers {
-		customer.Accept(visitor)
-	}
+type Circle struct {
+	radius int
 }
 
-func NewEnterpriseCustomer(name string) *EnterpriseCustomer {
-	return &EnterpriseCustomer{
-		name: name,
-	}
+func (c *Circle) Accept(v visitor) {
+	v.visitForCircle(c)
 }
 
-func (c *EnterpriseCustomer) Accept(visitor Visitor) {
-	visitor.Visit(c)
+func (c *Circle) GetType() string {
+	return "Circle"
 }
 
-type IndividualCustomer struct {
-	name string
+type Rectangle struct {
+	l int
+	b int
 }
 
-func NewIndividualCustomer(name string) *IndividualCustomer {
-	return &IndividualCustomer{
-		name: name,
-	}
+func (t *Rectangle) Accept(v visitor) {
+	v.visitForrectangle(t)
 }
 
-func (c *IndividualCustomer) Accept(visitor Visitor) {
-	visitor.Visit(c)
+func (t *Rectangle) GetType() string {
+	return "Rectangle"
 }
 
-type ServiceRequestVisitor struct{}
-
-func (*ServiceRequestVisitor) Visit(customer Customer) {
-	switch c := customer.(type) {
-	case *EnterpriseCustomer:
-		fmt.Printf("serving enterprise customer %s\n", c.name)
-	case *IndividualCustomer:
-		fmt.Printf("serving individual customer %s\n", c.name)
-	}
+type areaCalculator struct {
+	area int
 }
 
-// only for enterprise
-type AnalysisVisitor struct{}
+func (a *areaCalculator) visitForSquare(s *Square) {
+	// Calculate area for square.
+	// Then assign in to the area instance variable.
+	fmt.Print("Calculating area for square\n")
+}
 
-func (*AnalysisVisitor) Visit(customer Customer) {
-	switch c := customer.(type) {
-	case *EnterpriseCustomer:
-		fmt.Printf("analysis enterprise customer %s\n", c.name)
-	}
+func (a *areaCalculator) visitForCircle(s *Circle) {
+	fmt.Print("Calculating area for circle\n")
+}
+
+func (a *areaCalculator) visitForrectangle(s *Rectangle) {
+	fmt.Print("Calculating area for rectangle\n")
+}
+
+type middleCoordinates struct {
+	x int
+	y int
+}
+
+func (a *middleCoordinates) visitForSquare(s *Square) {
+	// Calculate middle point coordinates for square.
+	// Then assign in to the x and y instance variable.
+	fmt.Print("Calculating middle point coordinates for square\n")
+}
+
+func (a *middleCoordinates) visitForCircle(c *Circle) {
+	fmt.Print("Calculating middle point coordinates for circle\n")
+}
+
+func (a *middleCoordinates) visitForrectangle(t *Rectangle) {
+	fmt.Print("Calculating middle point coordinates for rectangle\n")
 }

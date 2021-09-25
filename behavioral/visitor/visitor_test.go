@@ -1,24 +1,30 @@
 package visitor
 
-func ExampleRequestVisitor() {
-	c := &CustomerCol{}
-	c.Add(NewEnterpriseCustomer("A company"))
-	c.Add(NewEnterpriseCustomer("B company"))
-	c.Add(NewIndividualCustomer("bob"))
-	c.Accept(&ServiceRequestVisitor{})
+func ExampleAreaCalculator() {
+	square := &Square{side: 2}
+	circle := &Circle{radius: 3}
+	rectangle := &Rectangle{l: 2, b: 3}
+
+	areaCalculator := &areaCalculator{}
+	square.accept(areaCalculator)
+	circle.accept(areaCalculator)
+	rectangle.accept(areaCalculator)
 	// Output:
-	// serving enterprise customer A company
-	// serving enterprise customer B company
-	// serving individual customer bob
+	// Calculating area for square
+	// Calculating area for circle
+	// Calculating area for rectangle
 }
 
-func ExampleAnalysis() {
-	c := &CustomerCol{}
-	c.Add(NewEnterpriseCustomer("A company"))
-	c.Add(NewIndividualCustomer("bob"))
-	c.Add(NewEnterpriseCustomer("B company"))
-	c.Accept(&AnalysisVisitor{})
+func ExampleMiddleCoordinates() {
+	square := &Square{side: 2}
+	circle := &Circle{radius: 3}
+	rectangle := &Rectangle{l: 2, b: 3}
+	middleCoordinates := &middleCoordinates{}
+	square.accept(middleCoordinates)
+	circle.accept(middleCoordinates)
+	rectangle.accept(middleCoordinates)
 	// Output:
-	// analysis enterprise customer A company
-	// analysis enterprise customer B company
+	// Calculating middle point coordinates for square
+	// Calculating middle point coordinates for circle
+	// Calculating middle point coordinates for rectangle
 }

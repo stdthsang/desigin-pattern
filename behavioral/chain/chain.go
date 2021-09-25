@@ -2,93 +2,88 @@ package chain
 
 import "fmt"
 
-type Manager interface {
-	HaveRight(money int) bool
-	HandleFeeRequest(name string, money int) bool
+type Department interface {
+	Execute(*Patient)
+	SetNext(Department)
 }
 
-type RequestChain struct {
-	Manager
-	successor *RequestChain
+type Patient struct {
+	Name              string
+	RegistrationDone  bool
+	DoctorCheckUpDone bool
+	MedicineDone      bool
+	PaymentDone       bool
 }
 
-func (r *RequestChain) SetSuccessor(m *RequestChain) {
-	r.successor = m
+type Reception struct {
+	next Department
 }
 
-func (r *RequestChain) HandleFeeRequest(name string, money int) bool {
-	if r.Manager.HaveRight(money) {
-		return r.Manager.HandleFeeRequest(name, money)
+func (r *Reception) Execute(patient *Patient) {
+	if patient.RegistrationDone {
+		fmt.Print("Patient registration already done")
+		r.next.Execute(patient)
+		return
 	}
-	if r.successor != nil {
-		return r.successor.HandleFeeRequest(name, money)
+	fmt.Print("Reception registering patient\n")
+	patient.RegistrationDone = true
+	r.next.Execute(patient)
+}
+
+func (r *Reception) SetNext(next Department) {
+	r.next = next
+}
+
+type Doctor struct {
+	next Department
+}
+
+func (d *Doctor) Execute(patient *Patient) {
+	if patient.DoctorCheckUpDone {
+		fmt.Print("Doctor checkup already done")
+		d.next.Execute(patient)
+		return
 	}
-	return false
+	fmt.Print("Doctor checking patient\n")
+	patient.DoctorCheckUpDone = true
+	d.next.Execute(patient)
 }
 
-func (r *RequestChain) HaveRight(money int) bool {
-	return true
+func (d *Doctor) SetNext(next Department) {
+	d.next = next
 }
 
-type ProjectManager struct{}
+type Medical struct {
+	next Department
+}
 
-func NewProjectManagerChain() *RequestChain {
-	return &RequestChain{
-		Manager: &ProjectManager{},
+func (m *Medical) Execute(patient *Patient) {
+	if patient.MedicineDone {
+		fmt.Print("Medicine already given to patient")
+		m.next.Execute(patient)
+		return
 	}
+	fmt.Print("Medical giving medicine to patient\n")
+	patient.MedicineDone = true
+	m.next.Execute(patient)
 }
 
-func (*ProjectManager) HaveRight(money int) bool {
-	return money < 500
+func (m *Medical) SetNext(next Department) {
+	m.next = next
 }
 
-func (*ProjectManager) HandleFeeRequest(name string, money int) bool {
-	if name == "bob" {
-		fmt.Printf("Project manager permit %s %d fee request\n", name, money)
-		return true
+type Cashier struct {
+	next Department
+}
+
+func (c *Cashier) Execute(patient *Patient) {
+	if patient.PaymentDone {
+		fmt.Print("Payment Done")
+		return
 	}
-	fmt.Printf("Project manager don't permit %s %d fee request\n", name, money)
-	return false
+	fmt.Print("Cashier getting money from patient patient\n")
 }
 
-type DepManager struct{}
-
-func NewDepManagerChain() *RequestChain {
-	return &RequestChain{
-		Manager: &DepManager{},
-	}
-}
-
-func (*DepManager) HaveRight(money int) bool {
-	return money < 5000
-}
-
-func (*DepManager) HandleFeeRequest(name string, money int) bool {
-	if name == "tom" {
-		fmt.Printf("Dep manager permit %s %d fee request\n", name, money)
-		return true
-	}
-	fmt.Printf("Dep manager don't permit %s %d fee request\n", name, money)
-	return false
-}
-
-type GeneralManager struct{}
-
-func NewGeneralManagerChain() *RequestChain {
-	return &RequestChain{
-		Manager: &GeneralManager{},
-	}
-}
-
-func (*GeneralManager) HaveRight(money int) bool {
-	return true
-}
-
-func (*GeneralManager) HandleFeeRequest(name string, money int) bool {
-	if name == "ada" {
-		fmt.Printf("General manager permit %s %d fee request\n", name, money)
-		return true
-	}
-	fmt.Printf("General manager don't permit %s %d fee request\n", name, money)
-	return false
+func (c *Cashier) SetNext(next Department) {
+	c.next = next
 }
