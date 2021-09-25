@@ -3,10 +3,10 @@ package composite
 import "fmt"
 
 type Component interface {
-	Parent() Component
-	SetParent(Component)
 	Name() string
 	SetName(string)
+	Parent() Component
+	SetParent(Component)
 	AddChild(Component)
 	Print(string)
 }
@@ -29,16 +29,8 @@ func NewComponent(kind int, name string) Component {
 }
 
 type component struct {
-	parent Component
 	name   string
-}
-
-func (c *component) Parent() Component {
-	return c.parent
-}
-
-func (c *component) SetParent(parent Component) {
-	c.parent = parent
+	parent Component
 }
 
 func (c *component) Name() string {
@@ -49,9 +41,17 @@ func (c *component) SetName(name string) {
 	c.name = name
 }
 
+func (c *component) Parent() Component {
+	return c.parent
+}
+
+func (c *component) SetParent(parent Component) {
+	c.parent = parent
+}
+
 func (c *component) AddChild(child Component) {}
 
-func (c *component) Print(name string) {}
+func (c *component) Print(string) {}
 
 type Leaf struct {
 	component
@@ -61,30 +61,30 @@ func NewLeaf() *Leaf {
 	return &Leaf{}
 }
 
-func (l *Leaf) Print(pre string) {
-	fmt.Printf("%s-%s\n", pre, l.Name())
+func (c *Leaf) Print(pre string) {
+	fmt.Printf("%s-%s\n", pre, c.Name())
 }
 
 type Composite struct {
 	component
-	children []Component
+	childs []Component
 }
 
 func NewComposite() *Composite {
 	return &Composite{
-		children: make([]Component, 0),
+		childs: make([]Component, 0),
 	}
 }
 
 func (c *Composite) AddChild(child Component) {
 	child.SetParent(c)
-	c.children = append(c.children, child)
+	c.childs = append(c.childs, child)
 }
 
 func (c *Composite) Print(pre string) {
 	fmt.Printf("%s+%s\n", pre, c.Name())
 	pre += " "
-	for _, comp := range c.children {
+	for _, comp := range c.childs {
 		comp.Print(pre)
 	}
 }

@@ -5,12 +5,12 @@ type Adaptee interface {
 }
 
 func NewAdaptee() Adaptee {
-	return &adapterImpl{}
+	return &adapteeImpl{}
 }
 
-type adapterImpl struct{}
+type adapteeImpl struct{}
 
-func (a *adapterImpl) SpecificRequest() string {
+func (a *adapteeImpl) SpecificRequest() string {
 	return "adaptee method"
 }
 
